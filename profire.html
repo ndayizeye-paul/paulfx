@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ForexVista | User Profile & Account Management</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%);
+      color: #eef2ff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: #94a3b8;
+    }
+
+    /* User Bar */
+    .user-bar {
+      background: #0f172a;
+      border-radius: 28px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border: 1px solid #1e293b;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-avatar-container {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #3b82f6, #a78bfa);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      object-fit: cover;
+      overflow: hidden;
+    }
+
+    .avatar-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .avatar-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      cursor: pointer;
+    }
+
+    .user-avatar-container:hover .avatar-overlay {
+      opacity: 1;
+    }
+
+    .avatar-overlay i {
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .user-details h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .user-details p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, #1e293b, #111827);
+      padding: 0.8rem 1.5rem;
+      border-radius: 40px;
+      text-align: center;
+    }
+
+    .balance-card .label {
+      font-size: 0.7rem;
+      color: #94a3b8;
+    }
+
+    .balance-card .amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    /* Profile Sections */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: #0f172a;
+      border-radius: 28px;
+      padding: 1.5rem;
+      border: 1px solid #1e293b;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3b82f650;
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .card-header i {
+      font-size: 1.5rem;
+      color: #3b82f6;
+    }
+
+    .card-header h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Profile Info */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .info-label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-weight: 600;
+    }
+
+    .edit-btn {
+      background: #3b82f6;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .edit-btn:hover {
+      background: #2563eb;
+    }
+
+    /* Deposit Methods */
+    .deposit-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .method-card {
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .method-card:hover {
+      transform: translateY(-3px);
+      background: #2d3a4e;
+    }
+
+    .method-card.selected {
+      border-color: #3b82f6;
+      background: #2d3a4e;
+    }
+
+    .method-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .method-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .method-fee {
+      font-size: 0.7rem;
+      color: #10b981;
+    }
+
+    .amount-input {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 0.8rem;
+      border-radius: 20px;
+      color: white;
+      font-size: 1rem;
+      margin: 1rem 0;
+    }
+
+    .amount-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+
+    .deposit-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 40px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    .deposit-btn:hover {
+      background: #059669;
+    }
+
+    .fee-info {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* Transaction History */
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .transaction-info {
+      flex: 1;
+    }
+
+    .transaction-method {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .transaction-date {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    .transaction-amount {
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .transaction-status {
+      font-size: 0.7rem;
+      color: #22c55e;
+      margin-left: 1rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1001;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #0f172a;
+      border-radius: 28px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid #3b82f6;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 1rem;
+    }
+
+    .modal-content input {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 0.8rem;
+      border-radius: 16px;
+      color: white;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .modal-content input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+      padding: 0.8rem;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .save-btn {
+      background: #10b981;
+      color: white;
+    }
+
+    .cancel-btn {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* Avatar Upload Modal Specific */
+    .avatar-preview {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .preview-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #a78bfa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-placeholder {
+      font-size: 3rem;
+      color: white;
+    }
+
+    .upload-options {
+      margin: 1rem 0;
+    }
+
+    .file-input-label {
+      display: block;
+      background: #3b82f6;
+      color: white;
+      padding: 0.8rem;
+      text-align: center;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 1rem;
+    }
+
+    .file-input-label:hover {
+      background: #2563eb;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .avatar-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .remove-avatar-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 40px;
+      cursor: pointer;
+      flex: 1;
+      transition: 0.2s;
+    }
+
+    .remove-avatar-btn:hover {
+      background: #dc2626;
+    }
+
+    .reset-btn {
+      background: #ef4444;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+      .user-bar {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #1e293b;
+      font-size: 0.7rem;
+      color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>👤 Account Management</h1>
+    <p>Manage your profile, deposits, and transaction history</p>
+  </div>
+
+  <!-- Main Profile Content -->
+  <div id="profileContent">
+    <!-- User Bar -->
+    <div class="user-bar">
+      <div class="user-info">
+        <div class="user-avatar-container" id="avatarContainer">
+          <div class="user-avatar" id="userAvatar">
+            <img id="avatarImage" class="avatar-image" style="display: none;">
+            <span id="avatarInitial" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">👤</span>
+          </div>
+          <div class="avatar-overlay" id="changeAvatarBtn">
+            <i class="fas fa-camera"></i>
+          </div>
+        </div>
+        <div class="user-details">
+          <h3 id="displayName">John Trader</h3>
+          <p id="displayUsername">@trader</p>
+        </div>
+      </div>
+      <div class="balance-card">
+        <div class="label">Account Balance</div>
+        <div class="amount" id="accountBalance">$10,000.00</div>
+      </div>
+      <button class="reset-btn" id="resetDataBtn">
+        <i class="fas fa-undo-alt"></i> Reset Data
+      </button>
+    </div>
+
+    <!-- Profile Grid -->
+    <div class="profile-grid">
+      <!-- Personal Information Card -->
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-user-circle"></i>
+          <h2>Personal Information</h2>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Username:</span>
+          <span class="info-value" id="profileUsername">trader</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email:</span>
+          <span class="info-value" id="profileEmail">john.trader@example.com</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Full Name:</span>
+          <span class="info-value" id="profileFullName">John Trader</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Member Since:</span>
+          <span class="info-value" id="profileMemberSince">January 15, 2024</span>
+        </div>
+        <button class="edit-btn" id="editProfileBtn">
+          <i class="fas fa-edit"></i> Edit Profile
+        </button>
+      </div>
+
+      <!-- Account Statistics Card -->
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-chart-line"></i>
+          <h2>Account Statistics</h2>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total Deposits:</span>
+          <span class="info-value" id="totalDeposits">$0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total Withdrawals:</span>
+          <span class="info-value" id="totalWithdrawals">$0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total Transactions:</span>
+          <span class="info-value" id="totalTransactions">0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Account Status:</span>
+          <span class="info-value" style="color: #10b981;">Active ✓</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Account Type:</span>
+          <span class="info-value">Premium Trader</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <!-- Deposit Funds Card -->
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-credit-card"></i>
+          <h2>Deposit Funds</h2>
+        </div>
+        
+        <div class="deposit-methods" id="depositMethods">
+          <div class="method-card selected" data-method="card">
+            <div class="method-icon"><i class="fas fa-credit-card"></i></div>
+            <div class="method-name">Credit Card</div>
+            <div class="method-fee">0% fee</div>
+          </div>
+          <div class="method-card" data-method="bank">
+            <div class="method-icon"><i class="fas fa-university"></i></div>
+            <div class="method-name">Bank Transfer</div>
+            <div class="method-fee">0% fee</div>
+          </div>
+          <div class="method-card" data-method="crypto">
+            <div class="method-icon"><i class="fab fa-bitcoin"></i></div>
+            <div class="method-name">Cryptocurrency</div>
+            <div class="method-fee">0.5% fee</div>
+          </div>
+          <div class="method-card" data-method="paypal">
+            <div class="method-icon"><i class="fab fa-paypal"></i></div>
+            <div class="method-name">PayPal</div>
+            <div class="method-fee">1% fee</div>
+          </div>
+        </div>
+
+        <input type="number" id="depositAmount" class="amount-input" placeholder="Enter amount (USD)" min="10" step="10" value="100">
+        <div id="feeInfo" class="fee-info"></div>
+        <button id="processDepositBtn" class="deposit-btn">
+          <i class="fas fa-check-circle"></i> Process Deposit
+        </button>
+      </div>
+
+      <!-- Transaction History Card -->
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-history"></i>
+          <h2>Transaction History</h2>
+        </div>
+        <div id="transactionHistory"></div>
+      </div>
+    </div>
+
+    <footer>
+      <i class="fas fa-shield-alt"></i> Secure platform | All transactions are encrypted
+    </footer>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" class="modal">
+  <div class="modal-content">
+    <h2>Edit Profile</h2>
+    <label style="color: #94a3b8;">Email Address</label>
+    <input type="email" id="editEmail" placeholder="your@email.com">
+    <label style="color: #94a3b8;">Full Name</label>
+    <input type="text" id="editFullName" placeholder="John Doe">
+    <div class="modal-buttons">
+      <button id="saveProfileBtn" class="save-btn">Save Changes</button>
+      <button id="closeModalBtn" class="cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Avatar Upload Modal -->
+<div id="avatarModal" class="modal">
+  <div class="modal-content">
+    <h2>Profile Picture</h2>
+    <div class="avatar-preview">
+      <div class="preview-circle">
+        <img id="previewImage" style="display: none;">
+        <span id="previewPlaceholder" class="preview-placeholder">👤</span>
+      </div>
+    </div>
+    
+    <div class="upload-options">
+      <label class="file-input-label" for="avatarUpload">
+        <i class="fas fa-upload"></i> Upload New Picture
+      </label>
+      <input type="file" id="avatarUpload" accept="image/*">
+    </div>
+    
+    <div class="avatar-actions">
+      <button id="removeAvatarBtn" class="remove-avatar-btn">
+        <i class="fas fa-trash"></i> Remove Picture
+      </button>
+      <button id="closeAvatarModalBtn" class="save-btn">
+        <i class="fas fa-check"></i> Done
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+  // User Data Management (stored in localStorage)
+  let userData = {
+    username: "trader",
+    balance: 10000,
+    profile: {
+      email: "john.trader@example.com",
+      fullName: "John Trader",
+      memberSince: "January 15, 2024"
+    },
+    transactions: [],
+    totalDeposits: 0,
+    avatar: null // Store base64 image data
+  };
+
+  // Load data from localStorage
+  function loadData() {
+    const saved = localStorage.getItem('forexProfileData');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        userData = { ...userData, ...parsed };
+      } catch(e) {}
+    }
+    updateAllDisplay();
+    loadAvatar();
+  }
+
+  // Save data to localStorage
+  function saveData() {
+    localStorage.setItem('forexProfileData', JSON.stringify(userData));
+  }
+
+  // Avatar Functions
+  function loadAvatar() {
+    const avatarImage = document.getElementById('avatarImage');
+    const avatarInitial = document.getElementById('avatarInitial');
+    
+    if (userData.avatar) {
+      avatarImage.src = userData.avatar;
+      avatarImage.style.display = 'block';
+      avatarInitial.style.display = 'none';
+    } else {
+      avatarImage.style.display = 'none';
+      avatarInitial.style.display = 'flex';
+    }
+  }
+
+  function updateAvatarPreview(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const previewImage = document.getElementById('previewImage');
+      const previewPlaceholder = document.getElementById('previewPlaceholder');
+      
+      previewImage.src = e.target.result;
+      previewImage.style.display = 'block';
+      previewPlaceholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function saveAvatar(base64Image) {
+    userData.avatar = base64Image;
+    saveData();
+    loadAvatar();
+  }
+
+  function removeAvatar() {
+    userData.avatar = null;
+    saveData();
+    loadAvatar();
+    
+    // Reset preview modal
+    const previewImage = document.getElementById('previewImage');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    previewImage.style.display = 'none';
+    previewPlaceholder.style.display = 'flex';
+    previewImage.src = '';
+  }
+
+  // Reset to default data
+  function resetData() {
+    if (confirm('Are you sure you want to reset all data? This will clear all transactions, reset balance to $10,000, and remove profile picture.')) {
+      userData = {
+        username: "trader",
+        balance: 10000,
+        profile: {
+          email: "john.trader@example.com",
+          fullName: "John Trader",
+          memberSince: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        },
+        transactions: [],
+        totalDeposits: 0,
+        avatar: null
+      };
+      saveData();
+      updateAllDisplay();
+      loadAvatar();
+      alert('Data has been reset successfully!');
+    }
+  }
+
+  // Update all displays
+  function updateAllDisplay() {
+    updateProfileDisplay();
+    updateTransactionHistory();
+    updateDepositFee();
+  }
+
+  function updateProfileDisplay() {
+    document.getElementById('displayName').innerText = userData.profile.fullName || userData.username;
+    document.getElementById('displayUsername').innerHTML = `@${userData.username}`;
+    document.getElementById('accountBalance').innerHTML = `$${userData.balance.toFixed(2)}`;
+    document.getElementById('profileUsername').innerText = userData.username;
+    document.getElementById('profileEmail').innerText = userData.profile.email || 'Not set';
+    document.getElementById('profileFullName').innerText = userData.profile.fullName || 'Not set';
+    document.getElementById('profileMemberSince').innerText = userData.profile.memberSince;
+    document.getElementById('totalDeposits').innerHTML = `$${userData.totalDeposits.toFixed(2)}`;
+    document.getElementById('totalWithdrawals').innerHTML = '$0';
+    document.getElementById('totalTransactions').innerHTML = userData.transactions.length;
+  }
+
+  function updateTransactionHistory() {
+    const container = document.getElementById('transactionHistory');
+    if (!userData.transactions || userData.transactions.length === 0) {
+      container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><br>No transactions yet</div>';
+      return;
+    }
+    
+    container.innerHTML = userData.transactions.slice().reverse().map(t => `
+      <div class="transaction-item">
+        <div class="transaction-info">
+          <div class="transaction-method">
+            <i class="fas ${getMethodIcon(t.method)}"></i> ${getMethodName(t.method)}
+          </div>
+          <div class="transaction-date">${t.date}</div>
+        </div>
+        <div class="transaction-amount">+$${t.amount.toFixed(2)}</div>
+        <div class="transaction-status">✓ ${t.status}</div>
+      </div>
+    `).join('');
+  }
+
+  function getMethodIcon(method) {
+    const icons = {
+      card: 'fa-credit-card',
+      bank: 'fa-university',
+      crypto: 'fa-bitcoin',
+      paypal: 'fa-paypal'
+    };
+    return icons[method] || 'fa-money-bill';
+  }
+
+  function getMethodName(method) {
+    const names = {
+      card: 'Credit Card',
+      bank: 'Bank Transfer',
+      crypto: 'Cryptocurrency',
+      paypal: 'PayPal'
+    };
+    return names[method] || method;
+  }
+
+  function processDeposit(amount, method) {
+    if (amount < 10) {
+      alert('Minimum deposit is $10');
+      return false;
+    }
+    
+    let fee = 0;
+    let feePercent = 0;
+    
+    if (method === 'crypto') {
+      fee = amount * 0.005;
+      feePercent = 0.5;
+    } else if (method === 'paypal') {
+      fee = amount * 0.01;
+      feePercent = 1;
+    }
+    
+    const netAmount = amount - fee;
+    userData.balance += netAmount;
+    userData.totalDeposits += amount;
+    
+    if (!userData.transactions) userData.transactions = [];
+    userData.transactions.push({
+      amount: netAmount,
+      method: method,
+      date: new Date().toLocaleString(),
+      status: 'Completed',
+      fee: fee,
+      grossAmount: amount,
+      feePercent: feePercent
+    });
+    
+    saveData();
+    updateAllDisplay();
+    
+    if (fee > 0) {
+      alert(`✅ Deposit Successful!\n\nAmount: $${amount.toFixed(2)}\nFee (${feePercent}%): $${fee.toFixed(2)}\nReceived: $${netAmount.toFixed(2)}\n\nNew Balance: $${userData.balance.toFixed(2)}`);
+    } else {
+      alert(`✅ Deposit Successful!\n\nAmount: $${amount.toFixed(2)}\nReceived: $${netAmount.toFixed(2)}\n\nNew Balance: $${userData.balance.toFixed(2)}`);
+    }
+    return true;
+  }
+
+  function updateDepositFee() {
+    const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+    const selectedMethod = document.querySelector('.method-card.selected')?.dataset.method || 'card';
+    
+    let fee = 0;
+    let feePercent = 0;
+    
+    if (selectedMethod === 'crypto') {
+      fee = amount * 0.005;
+      feePercent = 0.5;
+    } else if (selectedMethod === 'paypal') {
+      fee = amount * 0.01;
+      feePercent = 1;
+    }
+    
+    const netAmount = amount - fee;
+    const feeInfo = document.getElementById('feeInfo');
+    
+    if (fee > 0) {
+      feeInfo.innerHTML = `<i class="fas fa-info-circle"></i> Fee: $${fee.toFixed(2)} (${feePercent}%)<br><i class="fas fa-wallet"></i> You'll receive: $${netAmount.toFixed(2)}`;
+    } else {
+      feeInfo.innerHTML = `<i class="fas fa-check-circle"></i> No fees applied<br><i class="fas fa-wallet"></i> You'll receive: $${amount.toFixed(2)}`;
+    }
+  }
+
+  // Avatar Modal Functions
+  const avatarModal = document.getElementById('avatarModal');
+  const avatarUpload = document.getElementById('avatarUpload');
+  const previewImage = document.getElementById('previewImage');
+  const previewPlaceholder = document.getElementById('previewPlaceholder');
+
+  function openAvatarModal() {
+    // Reset preview to current avatar
+    if (userData.avatar) {
+      previewImage.src = userData.avatar;
+      previewImage.style.display = 'block';
+      previewPlaceholder.style.display = 'none';
+    } else {
+      previewImage.style.display = 'none';
+      previewPlaceholder.style.display = 'flex';
+      previewImage.src = '';
+    }
+    avatarUpload.value = '';
+    avatarModal.style.display = 'flex';
+  }
+
+  avatarUpload.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imgData = event.target.result;
+        previewImage.src = imgData;
+        previewImage.style.display = 'block';
+        previewPlaceholder.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('removeAvatarBtn').onclick = () => {
+    previewImage.style.display = 'none';
+    previewPlaceholder.style.display = 'flex';
+    previewImage.src = '';
+    avatarUpload.value = '';
+  };
+
+  document.getElementById('closeAvatarModalBtn').onclick = () => {
+    // Save the avatar if there's a preview image
+    if (previewImage.src && previewImage.style.display === 'block' && previewImage.src !== '') {
+      saveAvatar(previewImage.src);
+    } else if (!previewImage.src || previewImage.style.display === 'none') {
+      removeAvatar();
+    }
+    avatarModal.style.display = 'none';
+  };
+
+  // Event Listeners
+  document.getElementById('resetDataBtn').onclick = resetData;
+  document.getElementById('changeAvatarBtn').onclick = openAvatarModal;
+
+  // Deposit Methods Selection
+  document.querySelectorAll('.method-card').forEach(card => {
+    card.onclick = () => {
+      document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      updateDepositFee();
+    };
+  });
+
+  document.getElementById('depositAmount').addEventListener('input', updateDepositFee);
+  
+  document.getElementById('processDepositBtn').onclick = () => {
+    const amount = parseFloat(document.getElementById('depositAmount').value);
+    const selectedMethod = document.querySelector('.method-card.selected')?.dataset.method || 'card';
+    
+    if (isNaN(amount) || amount < 10) {
+      alert('Please enter a valid amount (minimum $10)');
+      return;
+    }
+    
+    processDeposit(amount, selectedMethod);
+    document.getElementById('depositAmount').value = '100';
+    updateDepositFee();
+  };
+
+  // Profile Edit Modal
+  const editModal = document.getElementById('editProfileModal');
+  document.getElementById('editProfileBtn').onclick = () => {
+    document.getElementById('editEmail').value = userData.profile?.email || '';
+    document.getElementById('editFullName').value = userData.profile?.fullName || '';
+    editModal.style.display = 'flex';
+  };
+  
+  document.getElementById('saveProfileBtn').onclick = () => {
+    userData.profile = {
+      ...userData.profile,
+      email: document.getElementById('editEmail').value,
+      fullName: document.getElementById('editFullName').value,
+      memberSince: userData.profile?.memberSince || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    };
+    saveData();
+    updateProfileDisplay();
+    editModal.style.display = 'none';
+    alert('Profile updated successfully!');
+  };
+  
+  document.getElementById('closeModalBtn').onclick = () => editModal.style.display = 'none';
+
+  // Close modals when clicking outside
+  window.onclick = (event) => {
+    if (event.target === editModal) {
+      editModal.style.display = 'none';
+    }
+    if (event.target === avatarModal) {
+      avatarModal.style.display = 'none';
+    }
+  };
+
+  // Initialize
+  loadData();
+  updateDepositFee();
+</script>
+</body>
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forex Market Analysis | Professional Trading Insights</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%);
+      color: #eef2ff;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: #94a3b8;
+    }
+
+    /* Pair Selector */
+    .pair-selector-container {
+      background: #1e293b;
+      border-radius: 60px;
+      padding: 0.5rem;
+      display: inline-flex;
+      margin-bottom: 2rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pair-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 0.6rem 1.5rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .pair-btn:hover {
+      background: #334155;
+      color: white;
+    }
+
+    .pair-btn.active {
+      background: #3b82f6;
+      color: white;
+    }
+
+    /* Current Price Display */
+    .current-price-card {
+      background: linear-gradient(145deg, #111827, #0f172a);
+      border-radius: 28px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      border: 1px solid #1e293b;
+    }
+
+    .pair-name {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      margin-bottom: 0.5rem;
+    }
+
+    .current-price {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    .price-change {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .positive {
+      color: #22c55e;
+    }
+
+    .negative {
+      color: #ef4444;
+    }
+
+    /* Grid Layout */
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Cards */
+    .card {
+      background: #0f172a;
+      border-radius: 28px;
+      padding: 1.5rem;
+      border: 1px solid #1e293b;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3b82f650;
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .card-header i {
+      font-size: 1.5rem;
+      color: #3b82f6;
+    }
+
+    .card-header h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Indicator Values */
+    .indicator-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+
+    .indicator-signal {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .signal-buy {
+      background: #22c55e20;
+      color: #22c55e;
+      border: 1px solid #22c55e;
+    }
+
+    .signal-sell {
+      background: #ef444420;
+      color: #ef4444;
+      border: 1px solid #ef4444;
+    }
+
+    .signal-neutral {
+      background: #f59e0b20;
+      color: #f59e0b;
+      border: 1px solid #f59e0b;
+    }
+
+    /* Levels */
+    .levels-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .level {
+      flex: 1;
+      text-align: center;
+      background: #1e293b;
+      padding: 0.75rem;
+      border-radius: 16px;
+    }
+
+    .level-label {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .level-value {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fbbf24;
+    }
+
+    /* Sentiment Bar */
+    .sentiment-bar-container {
+      background: #1e293b;
+      border-radius: 20px;
+      height: 12px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .sentiment-bar {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+      transition: width 0.5s ease;
+    }
+
+    .sentiment-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 0.5rem;
+    }
+
+    /* Recommendation */
+    .recommendation-box {
+      background: linear-gradient(135deg, #1e293b, #111827);
+      border-radius: 20px;
+      padding: 1rem;
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* News Items */
+    .news-item {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .news-item:last-child {
+      border-bottom: none;
+    }
+
+    .news-icon {
+      font-size: 1.2rem;
+    }
+
+    .news-content {
+      flex: 1;
+    }
+
+    .news-title {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+    }
+
+    .news-time {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    .impact-high {
+      color: #ef4444;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .impact-medium {
+      color: #f59e0b;
+    }
+
+    /* Chart Canvas */
+    .chart-container {
+      grid-column: span 2;
+    }
+
+    canvas {
+      width: 100%;
+      height: 300px;
+      background: #0a0f1c;
+      border-radius: 16px;
+    }
+
+    /* Tooltips */
+    .tooltip {
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+      .chart-container {
+        grid-column: span 1;
+      }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #1e293b;
+      font-size: 0.7rem;
+      color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 Forex Market Analysis</h1>
+    <p>Real-time technical indicators & market insights</p>
+  </div>
+
+  <!-- Pair Selector -->
+  <div style="text-align: center;">
+    <div class="pair-selector-container">
+      <button class="pair-btn active" data-pair="EURUSD">EUR/USD</button>
+      <button class="pair-btn" data-pair="GBPUSD">GBP/USD</button>
+      <button class="pair-btn" data-pair="USDJPY">USD/JPY</button>
+      <button class="pair-btn" data-pair="AUDUSD">AUD/USD</button>
+    </div>
+  </div>
+
+  <!-- Current Price -->
+  <div class="current-price-card">
+    <div class="pair-name" id="currentPairName">EUR/USD</div>
+    <div class="current-price" id="currentPrice">1.08950</div>
+    <div class="price-change" id="priceChange">+0.00%</div>
+  </div>
+
+  <!-- Analysis Grid -->
+  <div class="analysis-grid">
+    <!-- RSI Card -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-waveform"></i>
+        <h2>Relative Strength Index (RSI)</h2>
+      </div>
+      <div class="indicator-value" id="rsiValue">--</div>
+      <div id="rsiSignal" class="indicator-signal">--</div>
+      <div class="tooltip">
+        <i class="fas fa-info-circle"></i> RSI > 70 = Overbought (Sell signal) | RSI < 30 = Oversold (Buy signal)
+      </div>
+    </div>
+
+    <!-- MACD Card -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <h2>MACD</h2>
+      </div>
+      <div class="indicator-value" id="macdValue" style="font-size: 1.2rem;">--</div>
+      <div id="macdSignal" class="indicator-signal">--</div>
+      <div class="tooltip">
+        <i class="fas fa-info-circle"></i> MACD line crossing above signal = Bullish momentum
+      </div>
+    </div>
+
+    <!-- Moving Averages Card -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chart-simple"></i>
+        <h2>Moving Averages</h2>
+      </div>
+      <div style="margin-bottom: 0.5rem;"><span style="color:#94a3b8;">MA 50:</span> <strong id="ma50">--</strong></div>
+      <div style="margin-bottom: 0.5rem;"><span style="color:#94a3b8;">MA 200:</span> <strong id="ma200">--</strong></div>
+      <div id="maSignal" class="indicator-signal">--</div>
+      <div class="tooltip">
+        <i class="fas fa-info-circle"></i> Golden Cross (MA50 > MA200) = Bullish | Death Cross = Bearish
+      </div>
+    </div>
+
+    <!-- Support & Resistance Card -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chart-simple"></i>
+        <h2>Key Levels</h2>
+      </div>
+      <div class="levels-container">
+        <div class="level">
+          <div class="level-label">Resistance</div>
+          <div class="level-value" id="resistance">--</div>
+        </div>
+        <div class="level">
+          <div class="level-label">Pivot</div>
+          <div class="level-value" id="pivot">--</div>
+        </div>
+        <div class="level">
+          <div class="level-label">Support</div>
+          <div class="level-value" id="support">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bollinger Bands Card -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chart-bar"></i>
+        <h2>Bollinger Bands</h2>
+      </div>
+      <div><span style="color:#94a3b8;">Upper Band:</span> <strong id="upperBand">--</strong></div>
+      <div style="margin: 0.5rem 0;"><span style="color:#94a3b8;">Middle Band (MA20):</span> <strong id="middleBand">--</strong></div>
+      <div><span style="color:#94a3b8;">Lower Band:</span> <strong id="lowerBand">--</strong></div>
+      <div id="bbSignal" class="indicator-signal" style="margin-top: 0.8rem;">--</div>
+    </div>
+
+    <!-- Volatility Card -->
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <h2>Market Volatility</h2>
+      </div>
+      <div class="indicator-value" id="volatility" style="font-size: 1.5rem;">--</div>
+      <div id="volatilitySignal" style="margin-top: 0.5rem; font-size: 0.85rem;">--</div>
+      <div class="tooltip">
+        <i class="fas fa-info-circle"></i> Based on Average True Range (ATR)
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart and Sentiment Row -->
+  <div class="analysis-grid">
+    <div class="card chart-container">
+      <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <h2>Price Chart (Last 50 Periods)</h2>
+      </div>
+      <canvas id="priceChart" width="800" height="300"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-chart-pie"></i>
+        <h2>Market Sentiment</h2>
+      </div>
+      <div id="sentimentScore" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">--</div>
+      <div class="sentiment-bar-container">
+        <div class="sentiment-bar" id="sentimentBar" style="width: 50%;"></div>
+      </div>
+      <div class="sentiment-labels">
+        <span>Bearish</span>
+        <span>Neutral</span>
+        <span>Bullish</span>
+      </div>
+      <div id="tradingRecommendation" class="recommendation-box">
+        Loading analysis...
+      </div>
+    </div>
+  </div>
+
+  <!-- Market News -->
+  <div class="card">
+    <div class="card-header">
+      <i class="fas fa-newspaper"></i>
+      <h2>Market News & Economic Events</h2>
+    </div>
+    <div id="marketNews">
+      <div class="news-item">
+        <div class="news-icon"><i class="fas fa-spinner fa-spin"></i></div>
+        <div class="news-content">Loading market news...</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <i class="fas fa-chart-line"></i> Real-time technical analysis | Updated every 3 seconds | Data simulated for educational purposes
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+  // Forex Pairs Data
+  let forexRates = {
+    EURUSD: 1.08950,
+    GBPUSD: 1.27420,
+    USDJPY: 149.850,
+    AUDUSD: 0.65830
+  };
+
+  let currentPair = 'EURUSD';
+  let priceHistory = [];
+  let intervalId = null;
+
+  // Generate initial price history
+  function generatePriceHistory(pair, length = 50) {
+    const base = forexRates[pair];
+    const history = [];
+    for (let i = 0; i < length; i++) {
+      let variation = Math.sin(i * 0.2) * 0.002 + (Math.random() - 0.5) * 0.001;
+      history.push(base + variation);
+    }
+    return history;
+  }
+
+  // Update Forex Rates with realistic movement
+  function updateForexRates() {
+    for (let pair in forexRates) {
+      let change = (Math.random() - 0.5) * 0.0016;
+      let newRate = forexRates[pair] * (1 + change);
+      
+      // Keep within realistic bounds
+      if (pair === 'USDJPY') newRate = Math.min(155, Math.max(145, newRate));
+      else if (pair === 'EURUSD') newRate = Math.min(1.12, Math.max(1.05, newRate));
+      else if (pair === 'GBPUSD') newRate = Math.min(1.32, Math.max(1.22, newRate));
+      else if (pair === 'AUDUSD') newRate = Math.min(0.69, Math.max(0.63, newRate));
+      
+      forexRates[pair] = parseFloat(newRate.toFixed(5));
+    }
+    
+    // Update price history for current pair
+    priceHistory.push(forexRates[currentPair]);
+    if (priceHistory.length > 50) priceHistory.shift();
+    
+    // Update all indicators
+    updatePriceDisplay();
+    updateRSI();
+    updateMACD();
+    updateMovingAverages();
+    updateSupportResistance();
+    updateBollingerBands();
+    updateVolatility();
+    updateSentiment();
+    drawChart();
+  }
+
+  function updatePriceDisplay() {
+    const currentPrice = forexRates[currentPair];
+    const previousPrice = priceHistory.length > 1 ? priceHistory[priceHistory.length - 2] : currentPrice;
+    const change = ((currentPrice - previousPrice) / previousPrice) * 100;
+    
+    document.getElementById('currentPrice').innerHTML = currentPair === 'USDJPY' ? 
+      currentPrice.toFixed(3) : currentPrice.toFixed(5);
+    document.getElementById('currentPairName').innerHTML = currentPair;
+    
+    const changeElement = document.getElementById('priceChange');
+    changeElement.innerHTML = `${change >= 0 ? '+' : ''}${change.toFixed(3)}%`;
+    changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+  }
+
+  // Calculate RSI
+  function calculateRSI(prices, period = 14) {
+    if (prices.length < period + 1) return 50;
+    
+    let gains = 0, losses = 0;
+    for (let i = prices.length - period; i < prices.length; i++) {
+      let change = prices[i] - prices[i-1];
+      if (change >= 0) gains += change;
+      else losses -= change;
+    }
+    
+    let avgGain = gains / period;
+    let avgLoss = losses / period;
+    
+    if (avgLoss === 0) return 100;
+    let rs = avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+  }
+
+  function updateRSI() {
+    const rsi = calculateRSI(priceHistory);
+    document.getElementById('rsiValue').innerHTML = rsi.toFixed(1);
+    
+    const signalElement = document.getElementById('rsiSignal');
+    let signal, signalClass;
+    
+    if (rsi > 70) {
+      signal = '🔴 Overbought - SELL Signal';
+      signalClass = 'signal-sell';
+    } else if (rsi < 30) {
+      signal = '🟢 Oversold - BUY Signal';
+      signalClass = 'signal-buy';
+    } else {
+      signal = '⚪ Neutral';
+      signalClass = 'signal-neutral';
+    }
+    
+    signalElement.innerHTML = signal;
+    signalElement.className = `indicator-signal ${signalClass}`;
+  }
+
+  // Calculate MACD
+  function calculateEMA(prices, period) {
+    const k = 2 / (period + 1);
+    let ema = prices[0];
+    for (let i = 1; i < prices.length; i++) {
+      ema = prices[i] * k + ema * (1 - k);
+    }
+    return ema;
+  }
+
+  function updateMACD() {
+    if (priceHistory.length < 26) return;
+    
+    const ema12 = calculateEMA(priceHistory, 12);
+    const ema26 = calculateEMA(priceHistory, 26);
+    const macd = ema12 - ema26;
+    const signal = macd * 0.9; // Simplified signal line
+    
+    document.getElementById('macdValue').innerHTML = `MACD: ${macd.toFixed(5)}<br>Signal: ${signal.toFixed(5)}`;
+    
+    const signalElement = document.getElementById('macdSignal');
+    let signalText, signalClass;
+    
+    if (macd > signal) {
+      signalText = '📈 Bullish - BUY Momentum';
+      signalClass = 'signal-buy';
+    } else if (macd < signal) {
+      signalText = '📉 Bearish - SELL Momentum';
+      signalClass = 'signal-sell';
+    } else {
+      signalText = '⚪ Neutral';
+      signalClass = 'signal-neutral';
+    }
+    
+    signalElement.innerHTML = signalText;
+    signalElement.className = `indicator-signal ${signalClass}`;
+  }
+
+  function updateMovingAverages() {
+    if (priceHistory.length < 50) return;
+    
+    const ma50 = priceHistory.slice(-50).reduce((a, b) => a + b, 0) / 50;
+    const ma200 = priceHistory.slice(-200).reduce((a, b) => a + b, 0) / 200;
+    
+    document.getElementById('ma50').innerHTML = ma50.toFixed(5);
+    document.getElementById('ma200').innerHTML = ma200.toFixed(5);
+    
+    const signalElement = document.getElementById('maSignal');
+    let signal, signalClass;
+    
+    if (ma50 > ma200) {
+      signal = '✨ Golden Cross - BULLISH';
+      signalClass = 'signal-buy';
+    } else if (ma50 < ma200) {
+      signal = '💀 Death Cross - BEARISH';
+      signalClass = 'signal-sell';
+    } else {
+      signal = '⚪ Neutral';
+      signalClass = 'signal-neutral';
+    }
+    
+    signalElement.innerHTML = signal;
+    signalElement.className = `indicator-signal ${signalClass}`;
+  }
+
+  function updateSupportResistance() {
+    const current = forexRates[currentPair];
+    const support = current * 0.995;
+    const resistance = current * 1.005;
+    const pivot = (support + resistance) / 2;
+    
+    document.getElementById('support').innerHTML = support.toFixed(5);
+    document.getElementById('resistance').innerHTML = resistance.toFixed(5);
+    document.getElementById('pivot').innerHTML = pivot.toFixed(5);
+  }
+
+  function updateBollingerBands() {
+    if (priceHistory.length < 20) return;
+    
+    const period = 20;
+    const recentPrices = priceHistory.slice(-period);
+    const sma = recentPrices.reduce((a, b) => a + b, 0) / period;
+    
+    const variance = recentPrices.reduce((sum, price) => sum + Math.pow(price - sma, 2), 0) / period;
+    const stdDev = Math.sqrt(variance);
+    
+    const upperBand = sma + (stdDev * 2);
+    const lowerBand = sma - (stdDev * 2);
+    
+    document.getElementById('upperBand').innerHTML = upperBand.toFixed(5);
+    document.getElementById('middleBand').innerHTML = sma.toFixed(5);
+    document.getElementById('lowerBand').innerHTML = lowerBand.toFixed(5);
+    
+    const current = forexRates[currentPair];
+    const signalElement = document.getElementById('bbSignal');
+    let signal, signalClass;
+    
+    if (current > upperBand) {
+      signal = '🔴 Price above upper band - Overbought';
+      signalClass = 'signal-sell';
+    } else if (current < lowerBand) {
+      signal = '🟢 Price below lower band - Oversold';
+      signalClass = 'signal-buy';
+    } else {
+      signal = '⚡ Within bands - Normal range';
+      signalClass = 'signal-neutral';
+    }
+    
+    signalElement.innerHTML = signal;
+    signalElement.className = `indicator-signal ${signalClass}`;
+  }
+
+  function updateVolatility() {
+    if (priceHistory.length < 14) return;
+    
+    let trueRanges = [];
+    for (let i = priceHistory.length - 14; i < priceHistory.length; i++) {
+      if (i > 0) {
+        let tr = Math.abs(priceHistory[i] - priceHistory[i-1]);
+        trueRanges.push(tr);
+      }
+    }
+    
+    const atr = trueRanges.reduce((a, b) => a + b, 0) / trueRanges.length;
+    const volatilityPercent = (atr / forexRates[currentPair]) * 100;
+    
+    document.getElementById('volatility').innerHTML = `${volatilityPercent.toFixed(3)}%`;
+    
+    let signal;
+    if (volatilityPercent > 0.15) {
+      signal = '⚠️ High volatility - Expect large moves';
+    } else if (volatilityPercent < 0.05) {
+      signal = '📊 Low volatility - Range-bound market';
+    } else {
+      signal = '📈 Normal volatility';
+    }
+    document.getElementById('volatilitySignal').innerHTML = signal;
+  }
+
+  function updateSentiment() {
+    // Calculate overall sentiment based on multiple indicators
+    let sentimentScore = 0;
+    
+    // RSI contribution
+    const rsi = calculateRSI(priceHistory);
+    if (rsi < 30) sentimentScore += 2;
+    else if (rsi > 70) sentimentScore -= 2;
+    else if (rsi < 40) sentimentScore += 1;
+    else if (rsi > 60) sentimentScore -= 1;
+    
+    // MACD contribution
+    if (priceHistory.length >= 26) {
+      const ema12 = calculateEMA(priceHistory, 12);
+      const ema26 = calculateEMA(priceHistory, 26);
+      if (ema12 > ema26) sentimentScore += 1.5;
+      else sentimentScore -= 1.5;
+    }
+    
+    // Moving Averages contribution
+    if (priceHistory.length >= 50) {
+      const ma50 = priceHistory.slice(-50).reduce((a, b) => a + b, 0) / 50;
+      const ma200 = priceHistory.slice(-200).reduce((a, b) => a + b, 0) / 200;
+      if (ma50 > ma200) sentimentScore += 2;
+      else if (ma50 < ma200) sentimentScore -= 2;
+    }
+    
+    // Normalize to -5 to +5 scale
+    sentimentScore = Math.min(5, Math.max(-5, sentimentScore));
+    
+    const sentimentPercent = ((sentimentScore + 5) / 10) * 100;
+    document.getElementById('sentimentBar').style.width = `${sentimentPercent}%`;
+    
+    let sentimentText, sentimentColor;
+    if (sentimentScore > 2) {
+      sentimentText = `🐂 BULLISH (${sentimentScore.toFixed(1)})`;
+      sentimentColor = '#22c55e';
+    } else if (sentimentScore < -2) {
+      sentimentText = `🐻 BEARISH (${sentimentScore.toFixed(1)})`;
+      sentimentColor = '#ef4444';
+    } else {
+      sentimentText = `⚖️ NEUTRAL (${sentimentScore.toFixed(1)})`;
+      sentimentColor = '#f59e0b';
+    }
+    
+    document.getElementById('sentimentScore').innerHTML = sentimentText;
+    document.getElementById('sentimentScore').style.color = sentimentColor;
+    
+    // Trading Recommendation
+    let recommendation = '';
+    if (sentimentScore > 3) {
+      recommendation = '📈 STRONG BUY - Multiple bullish signals aligned. Consider long positions with tight stop-loss.';
+    } else if (sentimentScore > 1) {
+      recommendation = '📊 BUY - Positive momentum building. Look for pullbacks to enter.';
+    } else if (sentimentScore > -1) {
+      recommendation = '⏸️ NEUTRAL - Mixed signals. Wait for clearer direction.';
+    } else if (sentimentScore > -3) {
+      recommendation = '📉 SELL - Bearish pressure increasing. Consider short positions.';
+    } else {
+      recommendation = '🔻 STRONG SELL - Multiple bearish signals. Short opportunities with caution.';
+    }
+    
+    document.getElementById('tradingRecommendation').innerHTML = `<i class="fas fa-chart-line"></i> ${recommendation}`;
+  }
+
+  function updateMarketNews() {
+    const newsItems = [
+      { title: `Fed signals potential rate ${Math.random() > 0.5 ? 'hike' : 'cut'} in next meeting`, time: '2 min ago', impact: 'High' },
+      { title: `${currentPair} technical breakout forming on 4H chart`, time: '15 min ago', impact: 'Medium' },
+      { title: `ECB policymakers divided on future monetary policy`, time: '32 min ago', impact: 'High' },
+      { title: `US Non-Farm Payrolls expected ${Math.random() > 0.5 ? 'above' : 'below'} forecast`, time: '1 hour ago', impact: 'High' },
+      { title: `Inflation data shows ${(Math.random() * 0.5 + 2).toFixed(1)}% increase`, time: '2 hours ago', impact: 'Medium' },
+      { title: `Technical indicators show ${Math.random() > 0.5 ? 'bullish divergence' : 'bearish pressure'}`, time: '3 hours ago', impact: 'Low' }
+    ];
+    
+    document.getElementById('marketNews').innerHTML = newsItems.map(item => `
+      <div class="news-item">
+        <div class="news-icon"><i class="fas fa-bullhorn"></i></div>
+        <div class="news-content">
+          <div class="news-title">${item.title}</div>
+          <div class="news-time">${item.time} <span class="impact-${item.impact.toLowerCase()}">🔴 ${item.impact} Impact</span></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function drawChart() {
+    const canvas = document.getElementById('priceChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const w = canvas.clientWidth;
+    const h = 280;
+    canvas.width = w;
+    canvas.height = h;
+    
+    ctx.clearRect(0, 0, w, h);
+    
+    if (priceHistory.length === 0) return;
+    
+    const min = Math.min(...priceHistory);
+    const max = Math.max(...priceHistory);
+    const range = max - min || 0.01;
+    const stepX = w / (priceHistory.length - 1);
+    
+    // Draw grid
+    ctx.beginPath();
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i <= 4; i++) {
+      let y = h - (i * h / 4);
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+    
+    // Draw price line
+    ctx.beginPath();
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2.5;
+    
+    for (let i = 0; i < priceHistory.length; i++) {
+      let x = i * stepX;
+      let y = h - ((priceHistory[i] - min) / range) * h * 0.9 - 15;
+      y = Math.min(h - 10, Math.max(10, y));
+      
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    
+    // Add gradient fill
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fillStyle = '#3b82f620';
+    ctx.fill();
+    
+    // Add labels
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '10px monospace';
+    ctx.fillText(`${currentPair} - Last ${priceHistory.length} periods`, 10, 20);
+    ctx.fillText(`${max.toFixed(5)}`, w - 60, 25);
+    ctx.fillText(`${min.toFixed(5)}`, w - 60, h - 15);
+  }
+
+  // Change pair
+  function changePair(pair) {
+    currentPair = pair;
+    priceHistory = generatePriceHistory(pair);
+    
+    // Update active button
+    document.querySelectorAll('.pair-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.pair === pair) btn.classList.add('active');
+    });
+    
+    // Refresh all indicators
+    updatePriceDisplay();
+    updateRSI();
+    updateMACD();
+    updateMovingAverages();
+    updateSupportResistance();
+    updateBollingerBands();
+    updateVolatility();
+    updateSentiment();
+    drawChart();
+    updateMarketNews();
+  }
+
+  // Event listeners
+  document.querySelectorAll('.pair-btn').forEach(btn => {
+    btn.addEventListener('click', () => changePair(btn.dataset.pair));
+  });
+
+  // Initialize
+  priceHistory = generatePriceHistory('EURUSD');
+  updateMarketNews();
+  updateForexRates();
+  
+  // Start real-time updates
+  intervalId = setInterval(() => {
+    updateForexRates();
+    updateMarketNews();
+  }, 3000);
+</script>
+</body>
+</html>
